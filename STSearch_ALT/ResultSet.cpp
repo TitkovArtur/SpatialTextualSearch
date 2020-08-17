@@ -58,7 +58,7 @@ PairRecord::~PairRecord(){}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-BRQResult::BRQResult(Coordinates t, termSet tl, termSetSize sl, termSet tr, termSetSize sr){
+CDJResult::CDJResult(Coordinates t, termSet tl, termSetSize sl, termSet tr, termSetSize sr){
 //    getResult = result;
     numResult = 0;
     theta = t;
@@ -69,25 +69,25 @@ BRQResult::BRQResult(Coordinates t, termSet tl, termSetSize sl, termSet tr, term
     termSetR = tr;
     termSetSizeR = sr;
 }
-BRQResult::~BRQResult(){}
+CDJResult::~CDJResult(){}
 
 
 
-inline void BRQResult::insert(){
+inline void CDJResult::insert(){
     numResult++;
 }
 
-inline void BRQResult::insert(PairRecord rec){
+inline void CDJResult::insert(PairRecord rec){
     numResult++;
     result.push_back(rec);
 }
 
-void BRQResult::clear(){
+void CDJResult::clear(){
     result.clear();
     numResult = 0;
 }
 
-void BRQResult::print(char c){
+void CDJResult::print(char c){
     cout << "RESULT " << c << " pairs " << result.size() <<"\n";
     if(result.size()==0){
         cout << "EMPTY " <<"\n";

@@ -43,7 +43,7 @@ public:
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-struct BRQResult{
+struct CDJResult{
     vector<PairRecord> result;
     size_t numResult;
     bool getResult;
@@ -58,8 +58,8 @@ struct BRQResult{
     termSetSize termSetSizeR;
 
 
-    BRQResult(Coordinates t, termSet tl, termSetSize sl, termSet tr, termSetSize sr);
-    ~BRQResult();
+    CDJResult(Coordinates t, termSet tl, termSetSize sl, termSet tr, termSetSize sr);
+    ~CDJResult();
     inline void insert();
     inline void insert(PairRecord rec);
     void clear();
