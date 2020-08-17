@@ -5,7 +5,7 @@
 //#include "tools.cpp"
 //#include "timing.h"
 #include "ResultSet.h"
-//#include "BRQ_Queries.cpp"
+//#include "CDJ_Queries.cpp"
 #include "utils_boolean.cpp"
 #include <set>
 #include <ctime>
@@ -37,7 +37,7 @@ InvertedIndex *ifL;
 InvertedIndex *ifR;
 InvertedIndex *irtL;
 InvertedIndex *irtR;
-BRQResult* q;
+CDJResult* q;
 int runs = 1;
 int rounds = 10;
 float excludeTime = 0;
@@ -78,15 +78,15 @@ static bool Comparator(Record** l, Record** r){
 
 RStarTree<TreeDataP, double>* bulkload(int dim, int page_len, TreeDataP<double> **data, int data_num);
 Relation* ContainmentQueryWithBinSearchOfRelation(Relation& result, int numKeywords, int *keywords, InvertedIndex *iidx);
-size_t NestedLoopsDistanceJoin(BRQResult* q, Relation* R, Relation* S);
-void PlaneSweepDistanceJoin(BRQResult* q, Relation* R,Relation* S);
-void RangeQuery(BRQResult& q, const Record &l, Relation& R, const RStarTree<TreeDataP, double> *rtR);
-void secSetup(BRQResult* q, Relation& L, Relation& R, RStarTree<TreeDataP, double>* rtR );
-void thirdSetup(BRQResult& q, Relation& L, Relation& R, InvertedIndex* IFRT_R, RTree* RT_R);
-void thirdSetupALT(BRQResult& q, Relation& L, InvertedIndex* IFRT_R, RTree* RT_R);
-void IRTreeJoin(BRQResult& q, Relation& L, Relation& R, RTree* rt_L, RTree* rt_R, InvertedIndex* iix_L, InvertedIndex* iix_R);
+size_t NestedLoopsDistanceJoin(CDJResult* q, Relation* R, Relation* S);
+void PlaneSweepDistanceJoin(CDJResult* q, Relation* R,Relation* S);
+void RangeQuery(CDJResult& q, const Record &l, Relation& R, const RStarTree<TreeDataP, double> *rtR);
+void secSetup(CDJResult* q, Relation& L, Relation& R, RStarTree<TreeDataP, double>* rtR );
+void thirdSetup(CDJResult& q, Relation& L, Relation& R, InvertedIndex* IFRT_R, RTree* RT_R);
+void thirdSetupALT(CDJResult& q, Relation& L, InvertedIndex* IFRT_R, RTree* RT_R);
+void IRTreeJoin(CDJResult& q, Relation& L, Relation& R, RTree* rt_L, RTree* rt_R, InvertedIndex* iix_L, InvertedIndex* iix_R);
 Relation* ContainmentQuery(Relation& T, int numKeywords, int *keywords, InvertedIndex *iidx);
-void RTreeJoinAndTextVerification(BRQResult& q, Relation& L, Relation& R, RTree* rt_L, RTree* rt_R);
+void RTreeJoinAndTextVerification(CDJResult& q, Relation& L, Relation& R, RTree* rt_L, RTree* rt_R);
 
 
 bool benchmark_test();
@@ -141,7 +141,7 @@ void BuildIRTree(const char *datafile, Relation *R, RStarTree<TreeDataP, double>
 
 void PrintBenchmark(int terms, double dis){
     cout << "===================================================================" << endl;
-    cout << "================================BRQ================================" << endl;
+    cout << "================================CDJ================================" << endl;
     cout << "===================================================================" << endl << endl;
     cout << "Number terms " << terms << " Theta " << dis << endl;
     cout << "AVG Contaiment Query L " << numContainmentQueryL/(float)rounds << endl;
@@ -222,7 +222,7 @@ void findRandomTermSets(int numterms, float curtheta){
     keywordsL.clear();
     keywordsR.clear();
 
-    q = new BRQResult(curtheta, kwL, numterms, kwR, numterms);
+    q = new CDJResult(curtheta, kwL, numterms, kwR, numterms);
 //    cout << "findRandomTermSets curtheta " << curtheta << "END"; // " << q->theta_sqr << endl;
 
 //    cout << "findRandomTermSets q.theta " << q->theta << " " << q->theta_sqr << endl;
@@ -236,7 +236,9 @@ void findRandomTermSets(int numterms, float curtheta){
 int main(int argc, char **argv) {
     dataL = argv[1];
     dataR = argv[2];
-    int a = stoi(argv[3]); // if 1 var term size else distance
+
+    
+//    int a = stoi(argv[3]); // if 1 var term size else distance
     
     cout << "===================================================================" << endl;
     cout << "===================================================================" << endl;
@@ -257,7 +259,7 @@ int main(int argc, char **argv) {
 //    int kwL[6] = {3, 153};
 //    int kwR[6] = {25, 71};
 //    #endif
-//    q = new BRQResult(true, theta, kwL, 1, kwR, 1);
+//    q = new CDJResult(true, theta, kwL, 1, kwR, 1);
 
     
     
@@ -271,8 +273,14 @@ int main(int argc, char **argv) {
     R = new Relation(dataR);
     cout << "R (" << argv[2] << "): " << R->numRecords << " objects loaded, num keywords "<< R->numKeywords << " AVG terms " << R->avgRecordLength << " MAX terms " << R->maxRecordLength <<endl;
     cout << "R in Range [" << R->minX << ", " << R->maxX << "] X [" << R->minY << ", " << R->maxY << "] diameter: " << R->computeDiameter()    << endl;
+    int numKeywords = stoi(argv[3]);
+    float theta = stof(argv[4]) * L->computeDiameter();
+    cout << "Num keywords " << numKeywords << " Theta " << theta << endl << endl;
+
 
     
+    
+    cout << "Create Indices" << endl;
     sortTermSets(*L);
     sortTermSets(*R);
     cout << "CREATE IF\n";
@@ -285,61 +293,93 @@ int main(int argc, char **argv) {
     cout << "CREATE IR-TREES\n";
     BuildIRTree(dataL, L, rtL, irtL, invalidR, true);
     BuildIRTree(dataR, R, rtR, irtR, invalidR, true);
-    
-
-    
-    
-
     cout << "L R-Tree: num nodes " << rtL->num_nonleaf + rtL->num_leaf << "\t depth " << rtL->root->depth <<endl;
-    cout << "R R-Tree: num nodes " << rtR->num_nonleaf + rtR->num_leaf << "\t depth " << rtR->root->depth <<endl;
-    if(a == 0){
-        cout << "vary term size, distance = " << 0.01 * L->computeDiameter() << " ROUNDS " << rounds << endl << endl;
-    }else{
-        cout << "vary distance termsize = " << 3 << " ROUNDS " << rounds << endl << endl;
-    }
+    cout << "R R-Tree: num nodes " << rtR->num_nonleaf + rtR->num_leaf << "\t depth " << rtR->root->depth <<endl << endl;
+//    if(a == 0){
+//        cout << "vary term size, distance = " << 0.01 * L->computeDiameter() << " ROUNDS " << rounds << endl << endl;
+//    }else{
+//        cout << "vary distance termsize = " << 3 << " ROUNDS " << rounds << endl << endl;
+//    }
     
 
     //PICK RANDOM TERM SETS
     srand ((long)time(NULL));
 //    srand (NULL);
-    Record* rec1;
-    Record* rec2;
-    int recid1 = 1;
-    int recid2 = 1;
+//    Record* rec1;
+//    Record* rec2;
+//    int recid1 = 1;
+//    int recid2 = 1;
 //    int numKeywords = 1;
 
-    const float theta = 0.01 * L->computeDiameter();
-    if(a == 0){ // TERMS
-        for(int numKeywords = 1; numKeywords < 6; numKeywords++){
-            for(int i = 0; i < rounds; i++){
-                findRandomTermSets(numKeywords, theta);
-                if(!benchmark_test()){
-                    q->clear();
-                    i--;
-                    continue;
-                }
-                benchmark();
-            }
-            PrintBenchmark(numKeywords, theta);
-        }
-    }else{ // DISTANCE
-        const int numKeywords = 3;
-        for(int d = 0; d < 5; d++){
-            LocalTheta = distanceThresholds[d] * L->computeDiameter();
-            for(int i = 0; i < rounds; i++){
-                findRandomTermSets(numKeywords, theta);
-                if(!benchmark_test()){
-                    q->clear();
-                    i--;
-                    continue;
-                }
-                q->theta     = LocalTheta;
-                q->theta_sqr = LocalTheta*LocalTheta;
-                benchmark();
-            }
-            PrintBenchmark(numKeywords, LocalTheta);
-        }
+    cout << "Select Random Keyword Sets" << endl;
+    while(true){
+        findRandomTermSets(numKeywords, theta);
+        if(benchmark_test())
+            break;
+        q->clear();
     }
+    q->clear();
+    cout << "K_R keywords " << endl;
+    for(int i = 0; i < numKeywords; i++){
+        cout <<"keword\t "<< q->termSetL[i]  << "\t posting list length\t " << ifL->lists.at(kwL[i]).size() << endl;
+    }
+    cout << "K_S keywords " << endl;
+    for(int i = 0; i < numKeywords; i++){
+        cout <<"keword\t "<< q->termSetR[i] << "\t posting list length\t " << ifR->lists.at(kwR[i]).size() << endl;
+    }
+    
+    benchmark_0();
+    q->clear();
+    benchmark_1();
+    q->clear();
+    benchmark_2();
+    q->clear();
+    benchmark_3();
+    q->clear();
+    benchmark_4();
+    q->clear();
+    benchmark_5();
+    
+    
+    
+    
+    
+    
+    
+    
+    //BENCHMARK
+//    const float theta = 0.01 * L->computeDiameter();
+//    if(a == 0){ // TERMS
+//        for(int numKeywords = 1; numKeywords < 6; numKeywords++){
+//            for(int i = 0; i < rounds; i++){
+//                findRandomTermSets(numKeywords, theta);
+//                if(!benchmark_test()){
+//                    q->clear();
+//                    i--;
+//                    continue;
+//                }
+//                benchmark();
+//            }
+//            PrintBenchmark(numKeywords, theta);
+//        }
+//    }else{ // DISTANCE
+//        const int numKeywords = 3;
+//        for(int d = 0; d < 5; d++){
+//            LocalTheta = distanceThresholds[d] * L->computeDiameter();
+//            for(int i = 0; i < rounds; i++){
+//                findRandomTermSets(numKeywords, theta);
+//                if(!benchmark_test()){
+//                    q->clear();
+//                    i--;
+//                    continue;
+//                }
+//                q->theta     = LocalTheta;
+//                q->theta_sqr = LocalTheta*LocalTheta;
+//                benchmark();
+//            }
+//            PrintBenchmark(numKeywords, LocalTheta);
+//        }
+//    }
     
 
 
@@ -437,7 +477,7 @@ void benchmark(){
     numContainmentQueryL += LSubRelation.numRecords;
     numContainmentQueryR += RSubRelation.numRecords;
     numResults += q->numResult;
-    cout << "NUM RESULTS 0 " << q->numResult << endl;
+//    cout << "NUM RESULTS 0 " << q->numResult << endl;
 //    q->print('0');
     q->clear();
     timerQuery.stop();
@@ -451,7 +491,7 @@ void benchmark(){
     PlaneSweepDistanceJoin(q, &LSubRelation, &RSubRelation);
     runtimes[1] += timerQuery.stop();
     //CLEARING
-    cout << "NUM RESULTS 1 " << q->numResult << endl;
+//    cout << "NUM RESULTS 1 " << q->numResult << endl;
 //    q->print('1');
     q->clear();
     timerQuery.stop();
@@ -463,7 +503,7 @@ void benchmark(){
     secSetup(q, LSubRelation, *R, rtR);
     runtimes[2] += timerQuery.stop();
     //CLEARING
-    cout << "NUM RESULTS 2 " << q->numResult << endl;
+//    cout << "NUM RESULTS 2 " << q->numResult << endl;
 //    q->print('2');
     q->clear();
     rtR->clean();
@@ -475,7 +515,7 @@ void benchmark(){
     thirdSetup(*q, LSubRelation, *R, irtR, rtR);
     runtimes[3] += timerQuery.stop();
     //CLEARING
-    cout << "NUM RESULTS 3 " << q->numResult << endl;
+//    cout << "NUM RESULTS 3 " << q->numResult << endl;
 //    q->print('3');
 
     q->clear();
@@ -487,7 +527,7 @@ void benchmark(){
     IRTreeJoin(*q, *L, *R, rtL, rtR, irtL, irtR);
     runtimes[4] += timerQuery.stop();
     //CLEARING
-    cout << "NUM RESULTS 4 " << q->numResult << endl;
+//    cout << "NUM RESULTS 4 " << q->numResult << endl;
 //    q->print('4');
 
     q->clear();
@@ -504,7 +544,7 @@ void benchmark(){
 //    cout << "RUNTIME " << runtimes[5] << "\n";
 //    q->print('2');
     //CLEARING
-    cout << "NUM RESULTS 5 " << q->numResult << endl;
+//    cout << "NUM RESULTS 5 " << q->numResult << endl;
 //    q->print('5');
     q->clear();
     rtR->clean();
@@ -533,14 +573,16 @@ void benchmark_0(){
         NestedLoopsDistanceJoin(q, &LSubRelation, &RSubRelation);
     cout << "Nested Loops Distance Join: retrieves " << q->numResult/runs << "\tin " << timerStep.stop()/runs << "\tsec\n";
     cout << "\n-----Test in " << timerQuery.stop()/runs << "\tsec\n\n";
-//    q->print('0');
+#ifdef RetrieveResults
+    q->print('0');
+#endif
 }
 
 
 
 void benchmark_1(){
     cout << "===================================================================" << endl;
-    cout << "BRQ 1. SETUP: containment query and plane sweep" << endl;
+    cout << "CDJ 1. SETUP: containment query and plane sweep" << endl;
     cout << "===================================================================" << endl << endl;;
 //INIT
     timerQuery.stop();
@@ -564,11 +606,14 @@ void benchmark_1(){
 //    q->print('1');
     cout << "Plane Sweep: retrieves " << q->numResult/runs <<  " in \t" << timerStep.stop()/runs << "\tsec\n";
     cout << "\n-----1. Setup in\t" << timerQuery.stop()/runs << "\tsec\n\n";
+#ifdef RetrieveResults
+    q->print('1');
+#endif
 }
 
 void benchmark_2(){
     cout << "===================================================================" << endl;
-    cout << "BRQ 2. Setup - Containment Query and R-Tree" << endl;
+    cout << "CDJ 2. Setup - Containment Query and R-Tree" << endl;
     cout << "===================================================================" << endl << endl;;
 
 //INIT
@@ -592,10 +637,13 @@ void benchmark_2(){
     }
     cout << " : retrieves " << q->numResult/runs <<  " in \t" << (timerStep.stop()-excludeTime)/runs << "\tsec\n";
     cout << "\n-----2. Setup in\t" << (timerQuery.stop()-excludeTime)/runs << "\tsec\n\n";
+#ifdef RetrieveResults
+    q->print('2');
+#endif
 }
 void benchmark_3(){
     cout << "===================================================================" << endl;
-    cout << "BRQ 3. Setup - Containment Query and IR-Tree" << endl;
+    cout << "CDJ 3. Setup - Containment Query and IR-Tree" << endl;
     cout << "===================================================================" << endl << endl;;
 //INIT
     timerQuery.stop();
@@ -627,13 +675,16 @@ void benchmark_3(){
     }
     cout << " Containment Query and IR-Tree: retrieves " << q->numResult/runs <<  " in \t" << (timerStep.stop()-excludeTime)/runs << "\tsec\n";
     cout << "\n-----3. Setup in\t" << (timerQuery.stop()-excludeTime)/runs << "\tsec\n\n";
+#ifdef RetrieveResults
+    q->print('3');
+#endif
 }
 
 
 
 void benchmark_4(){
     cout << "===================================================================" << endl;
-    cout << "BRQ 4. Setup - IR-Tree Join" << endl;
+    cout << "CDJ 4. Setup - IR-Tree Join" << endl;
     cout << "===================================================================" << endl << endl;
 //INIT
     timerQuery.stop();
@@ -650,10 +701,13 @@ void benchmark_4(){
     }
     cout << " Containment Query and IR-Tree: retrieves " << q->numResult/runs <<  " in \t" << (timerStep.stop()-excludeTime)/runs << "\tsec\n";
     cout << "\n-----4. Setup in\t" << (timerQuery.stop()-excludeTime)/runs << "\tsec\n\n";
+#ifdef RetrieveResults
+    q->print('4');
+#endif
 }
 void benchmark_5(){
     cout << "===================================================================" << endl;
-    cout << "BRQ 5. Setup - R-Tree Join and textVerification" << endl;
+    cout << "CDJ 5. Setup - R-Tree Join and textVerification" << endl;
     cout << "===================================================================" << endl << endl;
     timerQuery.stop();
     timerStep.stop();
@@ -671,4 +725,7 @@ void benchmark_5(){
     }
     cout << "R-Tree Join and text probe: retrieves " << q->numResult/runs <<  " in \t" << (timerStep.stop()-excludeTime)/runs << "\tsec\n";
     cout << "\n-----5. Setup in\t" << (timerQuery.stop()-excludeTime)/runs << "\tsec\n\n";
+#ifdef RetrieveResults
+    q->print('5');
+#endif
 }
