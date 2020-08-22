@@ -37,7 +37,7 @@
 		75ABCBDC249A7111007A93EA /* GenericTool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F0F2249247C70001FBAE /* GenericTool.cpp */; };
 		75ABCBDD249A7111007A93EA /* tools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F0EA249247C60001FBAE /* tools.cpp */; };
 		75ABCBDE249A7111007A93EA /* mt19937ar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F0F1249247C70001FBAE /* mt19937ar.cpp */; };
-		75ABCBE5249A7812007A93EA /* BkQ_Queries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 75ABCBCA249A6F93007A93EA /* BkQ_Queries.cpp */; };
+		75ABCBE5249A7812007A93EA /* CkJ_Queries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 75ABCBCA249A6F93007A93EA /* CkJ_Queries.cpp */; };
 		75ABCBE6249A7812007A93EA /* CkJ_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 75ABCBCE249A709C007A93EA /* CkJ_main.cpp */; };
 		75B1F0CA2492342A0001FBAE /* ResultSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F0C82492342A0001FBAE /* ResultSet.cpp */; };
 		75B1F0F9249247C70001FBAE /* makefile in Sources */ = {isa = PBXBuildFile; fileRef = 75B1F0E9249247C60001FBAE /* makefile */; };
@@ -92,7 +92,7 @@
 		7574E0AB2490F28E006FC043 /* relation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = relation.cpp; sourceTree = "<group>"; };
 		7574E0AE2490F28F006FC043 /* relation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = relation.h; sourceTree = "<group>"; };
 		7599802524C166EE003F91F0 /* utils_sim.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utils_sim.cpp; sourceTree = "<group>"; };
-		75ABCBCA249A6F93007A93EA /* BkQ_Queries.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BkQ_Queries.cpp; sourceTree = "<group>"; };
+		75ABCBCA249A6F93007A93EA /* CkJ_Queries.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CkJ_Queries.cpp; sourceTree = "<group>"; };
 		75ABCBCC249A7018007A93EA /* CDJ_main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CDJ_main.cpp; sourceTree = "<group>"; };
 		75ABCBCE249A709C007A93EA /* CkJ_main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CkJ_main.cpp; sourceTree = "<group>"; };
 		75ABCBE4249A7111007A93EA /* BkQ */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BkQ; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -189,7 +189,7 @@
 				75B386B424A0F29F00C8E15B /* utils_spatial.cpp */,
 				752371F024B378A80006992B /* utils_boolean.cpp */,
 				75B1F10024924C5F0001FBAE /* CDJ_Queries.cpp */,
-				75ABCBCA249A6F93007A93EA /* BkQ_Queries.cpp */,
+				75ABCBCA249A6F93007A93EA /* CkJ_Queries.cpp */,
 				754FB5D524C0FCCD0041FDD8 /* TkRQ_Queris.cpp */,
 				75ABCBCC249A7018007A93EA /* CDJ_main.cpp */,
 				75ABCBCE249A709C007A93EA /* CkJ_main.cpp */,
@@ -336,7 +336,7 @@
 			files = (
 				7523720B24B682690006992B /* utils_spatial.cpp in Sources */,
 				7523720C24B682690006992B /* utils_boolean.cpp in Sources */,
-				75ABCBE5249A7812007A93EA /* BkQ_Queries.cpp in Sources */,
+				75ABCBE5249A7812007A93EA /* CkJ_Queries.cpp in Sources */,
 				75ABCBE6249A7812007A93EA /* CkJ_main.cpp in Sources */,
 				75ABCBD2249A7111007A93EA /* relation.cpp in Sources */,
 				75ABCBD3249A7111007A93EA /* Timer.cpp in Sources */,

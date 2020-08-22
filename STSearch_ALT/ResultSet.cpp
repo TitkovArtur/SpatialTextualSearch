@@ -106,7 +106,7 @@ void CDJResult::print(char c){
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-BkQResult::BkQResult(int num, termSet tl, termSetSize sl, termSet tr, termSetSize sr){
+CkJResult::CkJResult(int num, termSet tl, termSetSize sl, termSet tr, termSetSize sr){
     numInsertions= 0;
     k = num;
     theta = numeric_limits<int>::max();
@@ -120,7 +120,7 @@ BkQResult::BkQResult(int num, termSet tl, termSetSize sl, termSet tr, termSetSiz
 
 
 
-inline void BkQResult::insert(Coordinates dist){
+inline void CkJResult::insert(Coordinates dist){
     numInsertions++;
     
     if(numInsertions > k){
@@ -136,7 +136,7 @@ inline void BkQResult::insert(Coordinates dist){
 
 
 
-inline void BkQResult::insert(PairRecord rec){
+inline void CkJResult::insert(PairRecord rec){
     numInsertions++;
     auto it = result.begin();
     for (; it != result.end(); it++){
@@ -152,7 +152,7 @@ inline void BkQResult::insert(PairRecord rec){
     }
 }
 
-void BkQResult::clear(){
+void CkJResult::clear(){
     result.clear();
     numInsertions = 0;
     numResult = 0;
@@ -165,7 +165,7 @@ void BkQResult::clear(){
 }
 
 
-void BkQResult::print(char c){
+void CkJResult::print(char c){
     cout << "RESULT " << c << " pairs " << result.size() <<"\n";
     if(result.size()==0){
         cout << "EMPTY " <<"\n";
@@ -254,7 +254,7 @@ TkRQResult::TkRQResult(int numK, float distThreshold, termSet tl, termSetSize sl
     
 
 };
-//inline void BkQResult::insert(Coordinates dist){
+//inline void CkJResult::insert(Coordinates dist){
 //    numInsertions++;
 //
 //    if(numInsertions > k){
@@ -270,7 +270,7 @@ TkRQResult::TkRQResult(int numK, float distThreshold, termSet tl, termSetSize sl
 //
 //
 //
-//inline void BkQResult::insert(PairRecord rec){
+//inline void CkJResult::insert(PairRecord rec){
 //    numInsertions++;
 //    auto it = result.begin();
 //    for (; it != result.end(); it++){

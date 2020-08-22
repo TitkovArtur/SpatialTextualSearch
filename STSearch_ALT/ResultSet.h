@@ -70,7 +70,7 @@ struct CDJResult{
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-struct BkQResult{
+struct CkJResult{
     vector<PairRecord> result;
     size_t numResult;
     size_t numInsertions;
@@ -89,8 +89,8 @@ struct BkQResult{
     termSetSize termSetSizeR;
 
 
-    BkQResult(int t, termSet tl, termSetSize sl, termSet tr, termSetSize sr);
-    ~BkQResult();
+    CkJResult(int t, termSet tl, termSetSize sl, termSet tr, termSetSize sr);
+    ~CkJResult();
     inline void insert(Coordinates dist);
     inline void insert(PairRecord rec);
     void clear();

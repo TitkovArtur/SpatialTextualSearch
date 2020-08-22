@@ -1,5 +1,5 @@
 //
-//  BkQ_Queries.cpp
+//  CkJ_Queries.cpp
 //  STSearch_ALT
 //
 //  Created by Artur Titkov on 17.06.20.
@@ -143,11 +143,42 @@ bool qualify(const Record &r, const double locx, const double locy, const double
 bool qualify(double *mbrR, double *mbrS, double dthreshold_sqr);
 bool intersect(int dim, double *mbr, double *mbrR, double *mbrS);
 
+//OLDINSERTION
+//inline void CkJResult::insert(Coordinates d){
+//    numInsertions++;
+//
+//
+//    dist.push(d);
+//
+//    if(numInsertions > k){
+////        dist.push(d);
+//        float tmp = dist.top();
+//        dist.pop();
+//        theta = tmp;
+//        theta_sqr = tmp * tmp;
+//    }else if(numInsertions == k){
+////        dist.push(d);
+//        theta = dist.top();
+//        theta_sqr = theta * theta;
+//    }
+//
+//
+//
+////    if(numInsertions > k){
+////        theta = min(dist, theta);
+////        theta_sqr = theta * theta;
+////    }else if (numInsertions == k){
+////        theta = min(dist, tmp_theta);
+////        theta_sqr = theta * theta;
+////    }else{
+////        tmp_theta = min(dist, tmp_theta);
+////    }
+//}
 
-inline void BkQResult::insert(Coordinates d){
+
+
+inline void CkJResult::insert(Coordinates d){
     numInsertions++;
-    
-    
     dist.push(d);
     
     if(numInsertions > k){
@@ -161,23 +192,11 @@ inline void BkQResult::insert(Coordinates d){
         theta = dist.top();
         theta_sqr = theta * theta;
     }
-    
-    
-    
-//    if(numInsertions > k){
-//        theta = min(dist, theta);
-//        theta_sqr = theta * theta;
-//    }else if (numInsertions == k){
-//        theta = min(dist, tmp_theta);
-//        theta_sqr = theta * theta;
-//    }else{
-//        tmp_theta = min(dist, tmp_theta);
-//    }
+
 }
 
 
-
-inline void BkQResult::insert(PairRecord rec){
+inline void CkJResult::insert(PairRecord rec){
     numInsertions++;
     auto it = result.begin();
     for (; it != result.end(); it++){
@@ -293,7 +312,7 @@ inline void BkQResult::insert(PairRecord rec){
 
 ////////////////////////////// BASELINE
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////x
-void NestedLoopsDistanceJoin(BkQResult* q, Relation* R, Relation* S){
+void NestedLoopsDistanceJoin(CkJResult* q, Relation* R, Relation* S){
     size_t result = 0;
     auto dthreshold_sqr = q->theta_sqr;
     Record x,y;
@@ -327,7 +346,7 @@ void NestedLoopsDistanceJoin(BkQResult* q, Relation* R, Relation* S){
 
 ////////////////////////////// SETUP 1 X1
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline void internalLoop(BkQResult* q, const SubRelationIterator rec, const SubRelationIterator firstFS, const SubRelationIterator lastFS){
+inline void internalLoop(CkJResult* q, const SubRelationIterator rec, const SubRelationIterator firstFS, const SubRelationIterator lastFS){
     //unsigned long long result = 0;
     auto pivot = firstFS;
 
@@ -350,7 +369,7 @@ inline void internalLoop(BkQResult* q, const SubRelationIterator rec, const SubR
 }
 
 
-void PlaneSweepDistanceJoin(BkQResult* q, Relation* R,Relation* S){
+void PlaneSweepDistanceJoin(CkJResult* q, Relation* R,Relation* S){
     auto r = R->beginSubRelation();
     auto s = S->beginSubRelation();
     auto lastR = R->endSubRelation();
@@ -394,7 +413,7 @@ inline float QualifyMinMinDist(float *mbrR, float *mbrS, float threshold_sqr){
 
 ////////////////////////////// SETUP 2___X2
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void ContainmentkNNQueryOnRTree(BkQResult& q, Record& l, Relation& R, const RStarTree<TreeDataP, double> *rtR){
+void ContainmentkNNQueryOnRTree(CkJResult& q, Record& l, Relation& R, const RStarTree<TreeDataP, double> *rtR){
     size_t result = 0;
     double qrange[4];
     double mbr[4], inter[4];
@@ -534,11 +553,11 @@ void ContainmentkNNQueryOnRTree(BkQResult& q, Record& l, Relation& R, const RSta
             }
         }
     }
-    cout << "COUNTE " << counter << endl;
+//    cout << "COUNTE " << counter << endl;
 }
 
 
-void secSetup(BkQResult* q, Relation& L, Relation& R, RStarTree<TreeDataP, double>* rtR ){
+void secSetup(CkJResult* q, Relation& L, Relation& R, RStarTree<TreeDataP, double>* rtR ){
 
     auto l = L.beginSubRelation();
 
@@ -554,7 +573,7 @@ void secSetup(BkQResult* q, Relation& L, Relation& R, RStarTree<TreeDataP, doubl
 // 3. SETUP X3
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void RangeQueryWithTextProbe(BkQResult& q, Record& l, Relation& R, const RStarTree<TreeDataP, double> *rtR, InvertedIndex* iidx){
+void RangeQueryWithTextProbe(CkJResult& q, Record& l, Relation& R, const RStarTree<TreeDataP, double> *rtR, InvertedIndex* iidx){
     size_t result = 0;
     double qrange[4];
     float score;
@@ -711,7 +730,7 @@ void RangeQueryWithTextProbe(BkQResult& q, Record& l, Relation& R, const RStarTr
 
 
 
-void thirdSetup(BkQResult& q, Relation& L, Relation& R, InvertedIndex* IFRT_R, RTree* RT_R){
+void thirdSetup(CkJResult& q, Relation& L, Relation& R, InvertedIndex* IFRT_R, RTree* RT_R){
     int RNumKeywords = q.termSetSizeR;
     int *RKeywords   = q.termSetR;
     double threshold = q.theta;
@@ -740,7 +759,7 @@ void thirdSetup(BkQResult& q, Relation& L, Relation& R, InvertedIndex* IFRT_R, R
 // 4. SETUP X4
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SpatialTextualDistanceFilterOnNonLeafs(BkQResult& q, NonLeaf* l, NonLeaf* r, InvertedIndex* irtL, InvertedIndex* irtR, PqNodes* Q){
+void SpatialTextualDistanceFilterOnNonLeafs(CkJResult& q, NonLeaf* l, NonLeaf* r, InvertedIndex* irtL, InvertedIndex* irtR, PqNodes* Q){
     //according to T. Brinkhoff et al SIGMOD 93
     //first we restrict the search space, one difference is that we now expand the MBR -/+dist
     //we expanf the two nonleaf MBR and calculate the intersection I
@@ -871,7 +890,7 @@ void SpatialTextualDistanceFilterOnNonLeafs(BkQResult& q, NonLeaf* l, NonLeaf* r
 //    cout << "IN FILTER  " << Q.size() << "  \n\n";
 }
 
-void SpatialDistanceFilterONLeafAndNonLeaf(BkQResult& q, Leaf* l, NonLeaf* r, PqNodes* Q){
+void SpatialDistanceFilterONLeafAndNonLeaf(CkJResult& q, Leaf* l, NonLeaf* r, PqNodes* Q){
     vector<int> childR;
     double threshold = q.theta;
     double threshold_sqr = q.theta_sqr;
@@ -891,7 +910,7 @@ void SpatialDistanceFilterONLeafAndNonLeaf(BkQResult& q, Leaf* l, NonLeaf* r, Pq
 //    }
 }
 
-void SpatialJoinOnLeafs(BkQResult& q, Leaf* lLeaf, Leaf* rLeaf, Relation& L, Relation& R){
+void SpatialJoinOnLeafs(CkJResult& q, Leaf* lLeaf, Leaf* rLeaf, Relation& L, Relation& R){
     TreeDataP<double> **lEntry = lLeaf->data;
     TreeDataP<double> **rEntry = rLeaf->data;
     vector<RecordId> lChild;
@@ -1032,7 +1051,7 @@ void SpatialJoinOnLeafs(BkQResult& q, Leaf* lLeaf, Leaf* rLeaf, Relation& L, Rel
 
 
 
-void IRTreeJoin(BkQResult& q, Relation& L, Relation& R, RTree* rt_L, RTree* rt_R, InvertedIndex* iix_L, InvertedIndex* iix_R){
+void IRTreeJoin(CkJResult& q, Relation& L, Relation& R, RTree* rt_L, RTree* rt_R, InvertedIndex* iix_L, InvertedIndex* iix_R){
     int LNumKeywords = q.termSetSizeL;
     int* LKeywords   = q.termSetL;
     
@@ -1157,7 +1176,7 @@ void IRTreeJoin(BkQResult& q, Relation& L, Relation& R, RTree* rt_L, RTree* rt_R
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void SpatialJoinOnLeafs2(BkQResult& q, Leaf& l, Leaf& r, Relation& L, Relation& R){
+void SpatialJoinOnLeafs2(CkJResult& q, Leaf& l, Leaf& r, Relation& L, Relation& R){
     //according to T. Brinkhoff et al SIGMOD 93
     //first we restrict the search space, one difference is that we now expand the MBR -/+dist
     //we expanf the two nonleaf MBR and calculate the intersection I
@@ -1308,11 +1327,11 @@ void SpatialJoinOnLeafs2(BkQResult& q, Leaf& l, Leaf& r, Relation& L, Relation& 
 }
 
 
-void SpatialDistanceFilterONLeafAndNonLeaf(BkQResult& q, Leaf& l, NonLeaf& r, stack<NodesPair>* stack){
+void SpatialDistanceFilterONLeafAndNonLeaf(CkJResult& q, Leaf& l, NonLeaf& r, stack<NodesPair>* stack){
     
 }
 
-void SpatialDistanceFilterOnNonLeafs(BkQResult& q, NonLeaf& l, NonLeaf& r, PqNodes* Q ){
+void SpatialDistanceFilterOnNonLeafs(CkJResult& q, NonLeaf& l, NonLeaf& r, PqNodes* Q ){
     //according to T. Brinkhoff et al SIGMOD 93
     //first we restrict the search space, one difference is that we now expand the MBR -/+dist
     //we expanf the two nonleaf MBR and calculate the intersection I
@@ -1413,7 +1432,7 @@ void SpatialDistanceFilterOnNonLeafs(BkQResult& q, NonLeaf& l, NonLeaf& r, PqNod
 }
 
 
-void RTreeJoinAndTextVerification(BkQResult& q, Relation& L, Relation& R, RTree* rt_L, RTree* rt_R){
+void RTreeJoinAndTextVerification(CkJResult& q, Relation& L, Relation& R, RTree* rt_L, RTree* rt_R){
     int LNumKeywords = q.termSetSizeL;
     int* LKeywords   = q.termSetL;
     int RNumKeywords = q.termSetSizeR;

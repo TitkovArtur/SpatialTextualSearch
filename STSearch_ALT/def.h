@@ -41,7 +41,7 @@ typedef TreeDataP<double> Data;
 
 
 //#define poly
-//#define RetrieveResults
+#define RetrieveResults
 
 
 
