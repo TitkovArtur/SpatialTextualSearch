@@ -21,12 +21,12 @@ bool sortbysec2(const pair<int,float> &a, const pair<int,float> &b){
 
 
 
-struct compResult {
-    bool operator()(const PairRecord& a, const PairRecord& b) const
-    {
-        return a.score > b.score;
-    }
-};
+//struct compResult {
+//    bool operator()(const PairRecord& a, const PairRecord& b) const
+//    {
+//        return a.score > b.score;
+//    }
+//};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PairRecord::PairRecord(Record* lR, Record* rR, RecordId l, RecordId r, Score s){
@@ -136,29 +136,33 @@ inline void CkJResult::insert(Coordinates dist){
 
 
 
-inline void CkJResult::insert(PairRecord rec){
-    numInsertions++;
-    auto it = result.begin();
-    for (; it != result.end(); it++){
-        if( !(*it < rec) ){
-            break;
-        }
-    }
-    result.insert(it, rec);
-    if(result.size() > k){
-        result.erase(result.end()-1);
-        theta = (result.end()-1)->score;
-        theta_sqr = theta * theta;
-    }
-}
+//inline void CkJResult::insert(PairRecord rec){
+//    numInsertions++;
+//    auto it = result.begin();
+//    for (; it != result.end(); it++){
+//        if( !(*it < rec) ){
+//            break;
+//        }
+//    }
+//    result.insert(it, rec);
+//    if(result.size() > k){
+//        result.erase(result.end()-1);
+//        theta = (result.end()-1)->score;
+//        theta_sqr = theta * theta;
+//    }
+//}
 
 void CkJResult::clear(){
-    result.clear();
+    
     numInsertions = 0;
     numResult = 0;
     theta = numeric_limits<int>::max();
     tmp_theta = numeric_limits<int>::max();
     theta_sqr = theta * theta;
+    while (!result.empty()) {
+        result.pop();
+    }
+    
     while (!dist.empty()) {
         dist.pop();
     }
@@ -166,14 +170,16 @@ void CkJResult::clear(){
 
 
 void CkJResult::print(char c){
-    cout << "RESULT " << c << " pairs " << result.size() <<"\n";
+    cout << "RESULT " << c << " pairs " << result.size() << " Insertions " << numInsertions  << " theta " << theta<< "\n";
     if(result.size()==0){
         cout << "EMPTY " <<"\n";
     }else{
-        for(int i = 0; i < result.size(); i++){
-            result.at(i).print(c);
+        while (!result.empty()) {
+            PairRecord tmp = result.top();
+            tmp.print(c);
+            result.pop();
+//            cout << "\n";
         }
-        cout << "\n";
     }
 }
 

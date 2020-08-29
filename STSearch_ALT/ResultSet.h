@@ -70,8 +70,19 @@ struct CDJResult{
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+struct compResult {
+    bool operator()(const PairRecord& a, const PairRecord& b) const
+    {
+        return a.score < b.score;
+    }
+};
+
+
+
 struct CkJResult{
-    vector<PairRecord> result;
+//    vector<PairRecord> result;
+    priority_queue<PairRecord, vector<PairRecord>, compResult> result;
     size_t numResult;
     size_t numInsertions;
     int k;

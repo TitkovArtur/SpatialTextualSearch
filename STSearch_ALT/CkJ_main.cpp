@@ -78,6 +78,7 @@ RStarTree<TreeDataP, double>* bulkload(int dim, int page_len, TreeDataP<double> 
 Relation* ContainmentQueryWithBinSearch(Relation& result, int numKeywords, int *keywords, InvertedIndex *iidx);
 Relation* ContainmentQueryWithBinSearchOfRelation(Relation& result, int numKeywords, int *keywords, InvertedIndex *iidx);
 size_t NestedLoopsDistanceJoin(CkJResult* q, Relation* R, Relation* S);
+size_t NestedLoopsDistanceJoinALT(CkJResult* q, Relation* R, Relation* S);
 void PlaneSweepDistanceJoin(CkJResult* q, Relation* R,Relation* S);
 void RangeQuery(CkJResult& q, const Record &l, Relation& R, const RStarTree<TreeDataP, double> *rtR);
 void secSetup(CkJResult* q, Relation& L, Relation& R, RStarTree<TreeDataP, double>* rtR );
@@ -142,6 +143,7 @@ struct com {
 bool benchmark_test();
 void benchmark();
 void benchmark_0();
+void benchmark_0_ALT();
 void benchmark_1();
 void benchmark_2();
 void benchmark_3();
@@ -310,9 +312,30 @@ int main(int argc, char **argv){
     cout << "========================================================================================================================" << endl;
     cout << "========================================================================================================================" << endl << endl;
     
+    
+    
+    
+//    cout << center("A", 5) << "|"
+//    << center("B", 5) << "|";
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     benchmark_0();
-    q->print('0');
+//    q->print('0');
+//    cout << "Insertions " << q->numInsertions << " theta " << q->theta << endl;
     q->clear();
+//    benchmark_0_ALT();
+//    cout << "Insertions " << q->numInsertions << " theta " << q->theta << endl;
+//    q->print('0');
+//    q->clear();
     
     benchmark_1();
     q->print('1');
@@ -503,7 +526,27 @@ void benchmark_0(){
     
 }
 
+void benchmark_0_ALT(){
+    cout << "===================================================================" << endl;
+    cout << "Test - Containment Query and Nested Loops Distance Join" << endl;
+    cout << "===================================================================" << endl << endl;
+//INIT
+    timerQuery.stop();
+    timerStep.stop();
 
+//Containment Queries
+    LSubRelation = *ContainmentQueryWithBinSearchOfRelation(*L, q->termSetSizeL, q->termSetL, ifL);
+    cout << "Containment Query with Bin Search L: retrieves " << LSubRelation.numRecords << "\tin " << timerStep.stop()/runs << "\tsec\n";
+    RSubRelation = *ContainmentQueryWithBinSearchOfRelation(*L, q->termSetSizeR, q->termSetR, ifR);
+    cout << "Containment Query with Bin Search R: retrieves " << RSubRelation.numRecords << "\tin " << timerStep.stop()/runs << "\tsec\n";
+
+//Nested Loops Distance Join
+    NestedLoopsDistanceJoinALT(q, &LSubRelation, &RSubRelation);
+    cout << "Nested Loops Distance Join: retrieves " << q->numResult/runs << "\tin " << timerStep.stop()/runs << "\tsec\n";
+    cout << "\n-----Baseline in " << timerQuery.stop()/runs << "\tsec\n\n";
+//    q->print('l');
+    
+}
 
 
 

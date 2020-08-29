@@ -183,8 +183,8 @@ inline void CkJResult::insert(Coordinates d){
     
     if(numInsertions > k){
 //        dist.push(d);
-        float tmp = dist.top();
         dist.pop();
+        float tmp = dist.top();
         theta = tmp;
         theta_sqr = tmp * tmp;
     }else if(numInsertions == k){
@@ -195,22 +195,65 @@ inline void CkJResult::insert(Coordinates d){
 
 }
 
-
 inline void CkJResult::insert(PairRecord rec){
-    numInsertions++;
-    auto it = result.begin();
-    for (; it != result.end(); it++){
-        if( !(*it < rec) ){
-            break;
+        numInsertions++;
+        result.push(rec);
+        
+        if(numInsertions > k){
+    //        dist.push(d);
+            result.pop();
+            PairRecord tmprec =  result.top();
+            float tmp = tmprec.score;
+            theta = tmp;
+            theta_sqr = tmp * tmp;
+        }else if(numInsertions == k){
+    //        dist.push(d);
+            PairRecord tmprec = result.top();
+            theta = tmprec.score;
+            theta_sqr = theta * theta;
         }
-    }
-    result.insert(it, rec);
-    if(result.size() > k){
-        result.erase(result.end()-1);
-        theta = (result.end()-1)->score;
-        theta_sqr = theta * theta;
-    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+//    numInsertions++;
+//    auto it = result.begin();
+//    for (; it != result.end(); it++){
+//        if( !(*it < rec) ){
+//            break;
+//        }
+//    }
+//    result.insert(it, rec);
+//    if(result.size() > k){
+//        result.erase(result.end()-1);
+//        theta = (result.end()-1)->score;
+//        theta_sqr = theta * theta;
+//    }
 }
+
+
+//OLD
+//inline void CkJResult::insert(PairRecord rec){
+//    numInsertions++;
+//    auto it = result.begin();
+//    for (; it != result.end(); it++){
+//        if( !(*it < rec) ){
+//            break;
+//        }
+//    }
+//    result.insert(it, rec);
+//    if(result.size() > k){
+//        result.erase(result.end()-1);
+//        theta = (result.end()-1)->score;
+//        theta_sqr = theta * theta;
+//    }
+//}
 
 //class CompareKeywordsByFrequencyR
 //{
@@ -334,7 +377,22 @@ void NestedLoopsDistanceJoin(CkJResult* q, Relation* R, Relation* S){
 }
 
 
+void NestedLoopsDistanceJoinALT(CkJResult* q, Relation* R, Relation* S){
+    size_t result = 0;
+    auto dthreshold_sqr = q->theta_sqr;
+    Record x,y;
+        
+        for(int r = 0; r < R->numRecords; r++){
+            x = *R->beginSubRelation()[r];
+            for(int s = 0; s < S->numRecords; s++){
+                y = *S->beginSubRelation()[s];
+                if (qualify(x, y, q->theta_sqr)){
+                    q->insert(distance2N(x, y));
+                }
+            }
+        }
 
+}
 
 
 
