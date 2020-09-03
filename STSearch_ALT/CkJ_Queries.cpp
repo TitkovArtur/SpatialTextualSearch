@@ -14,7 +14,7 @@
 #include "utils_spatial.cpp"
 
 
-#define RetrieveResults
+
 int counter = 0;
 
 struct compareScoredNodes;
@@ -143,52 +143,20 @@ bool qualify(const Record &r, const double locx, const double locy, const double
 bool qualify(double *mbrR, double *mbrS, double dthreshold_sqr);
 bool intersect(int dim, double *mbr, double *mbrR, double *mbrS);
 
-//OLDINSERTION
-//inline void CkJResult::insert(Coordinates d){
-//    numInsertions++;
-//
-//
-//    dist.push(d);
-//
-//    if(numInsertions > k){
-////        dist.push(d);
-//        float tmp = dist.top();
-//        dist.pop();
-//        theta = tmp;
-//        theta_sqr = tmp * tmp;
-//    }else if(numInsertions == k){
-////        dist.push(d);
-//        theta = dist.top();
-//        theta_sqr = theta * theta;
-//    }
-//
-//
-//
-////    if(numInsertions > k){
-////        theta = min(dist, theta);
-////        theta_sqr = theta * theta;
-////    }else if (numInsertions == k){
-////        theta = min(dist, tmp_theta);
-////        theta_sqr = theta * theta;
-////    }else{
-////        tmp_theta = min(dist, tmp_theta);
-////    }
-//}
+
 
 
 
 inline void CkJResult::insert(Coordinates d){
     numInsertions++;
     dist.push(d);
-    
+
     if(numInsertions > k){
-//        dist.push(d);
         dist.pop();
         float tmp = dist.top();
         theta = tmp;
         theta_sqr = tmp * tmp;
     }else if(numInsertions == k){
-//        dist.push(d);
         theta = dist.top();
         theta_sqr = theta * theta;
     }
@@ -198,156 +166,26 @@ inline void CkJResult::insert(Coordinates d){
 inline void CkJResult::insert(PairRecord rec){
         numInsertions++;
         result.push(rec);
-        
+
         if(numInsertions > k){
-    //        dist.push(d);
             result.pop();
             PairRecord tmprec =  result.top();
             float tmp = tmprec.score;
             theta = tmp;
             theta_sqr = tmp * tmp;
         }else if(numInsertions == k){
-    //        dist.push(d);
             PairRecord tmprec = result.top();
             theta = tmprec.score;
             theta_sqr = theta * theta;
         }
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-//    numInsertions++;
-//    auto it = result.begin();
-//    for (; it != result.end(); it++){
-//        if( !(*it < rec) ){
-//            break;
-//        }
-//    }
-//    result.insert(it, rec);
-//    if(result.size() > k){
-//        result.erase(result.end()-1);
-//        theta = (result.end()-1)->score;
-//        theta_sqr = theta * theta;
-//    }
 }
 
 
-//OLD
-//inline void CkJResult::insert(PairRecord rec){
-//    numInsertions++;
-//    auto it = result.begin();
-//    for (; it != result.end(); it++){
-//        if( !(*it < rec) ){
-//            break;
-//        }
-//    }
-//    result.insert(it, rec);
-//    if(result.size() > k){
-//        result.erase(result.end()-1);
-//        theta = (result.end()-1)->score;
-//        theta_sqr = theta * theta;
-//    }
-//}
-
-//class CompareKeywordsByFrequencyR
-//{
-//public:
-//    bool operator() (const int& klhs, const int& krhs) const
-//    {
-//        return (iidxR->lists[klhs].size() < iidxR->lists[krhs].size());
-//    }
-//};
-//
-//Relation* SetContainmentQueryWithResult(Relation& T, int numKeywords, int *keywords, InvertedIndex *iidx){
-//
-//    std::vector<int>* result = new std::vector<int>;
-//    std::vector<InvertedListEntry*> lists;
-//    std::vector<int> actualPosition;
-//    Relation* output = new Relation();
-//    int listLengths[numKeywords];
-//    int tmp[numKeywords];
-//
-//
-//    //create tmp keyword set
-//    for(int i = 0; i < numKeywords; i++){
-//        tmp[i] = keywords[i];
-//    }
-//
-//    //get postingList lengths for keywords
-//    for(int i = 0; i < numKeywords; i++){
-//        listLengths[i] = iidx->lists.at(tmp[i]).size();
-//    }
-//
-//    //sort termSet regarding listLengths (bubble sort) // already sorted
-////    for(int i = 0; i < terms; i++){
-////        for(int j = 0; j < terms-1-i; j++){
-////            if(listLengths[j] > listLengths[j+1]){
-////                int t_tmp = tmp[j];
-////                int l_tmp = listLengths[j];
-////
-////                tmp[j]     = tmp[j+1];
-////                listLengths[j] = listLengths[j+1];
-////                tmp[j+1]     = t_tmp;
-////                listLengths[j+1] = l_tmp;
-////            }
-////        }
-////    }
-//
-//    // get postingslists set positon vector
-//    for(int i = 0; i < numKeywords ; i++){
-//        lists.push_back( (iidx->lists.at(tmp[i]).data()) );
-//        actualPosition.push_back(0);
-//    }
-//
-//
-//    // for each doc in first postingLists
-//    for(int i = 0; i < listLengths[0]; i++){
-//        int document = lists.at(0)[i].rec->id;
-//
-//        // for each postingsList from 1 ... numkeywords-1
-//        for(int j = 1; j < numKeywords ; j++){
-//            //for each doc in postinglist
-//            for(int l = actualPosition[j]; l < listLengths[j]; l++){
-//                if( document == lists.at(j)[l].rec->id ){
-//                    actualPosition[j] = l;
-//                    break;
-//                } //lists.at(0)->rec->id
-//            }
-//        }
-//        for(int j = 1; j < numKeywords ; j++){
-//            if(document != lists.at(j)[actualPosition[j]].rec->id){
-//                break;
-//            }
-//            if(j == numKeywords -1){
-//                result->push_back(document);
-//            }
-//        }
-//    }
-//
-//    vector<Record*>* m = new vector<Record*>;
-//
-//    for(int i = 0; i < result->size(); i++ ){
-//        //(T.recs[(result->at(i))]).Print('s');
-//        m->push_back(  &(T.recs[(result->at(i))]) );
-//        output->numRecords++;
-//    }
-//    output->subTable = (m->data());
-//    output->numRecords = m->size();
-//    return output;
-//};
-//
-
-
-
-
-
 ////////////////////////////// SETUPS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1059,7 +897,7 @@ void SpatialJoinOnLeafs(CkJResult& q, Leaf* lLeaf, Leaf* rLeaf, Relation& L, Rel
 #ifdef RetrieveResults
                     q.insert(PairRecord( L[id1], R[id2], id1, id2, distance2N(*L[id1], *R[id2])));
 #else
-                    q.insert();
+                    q.insert(distance2N(*L[id1], *R[id2]));
 #endif
                 }
 
@@ -1087,7 +925,7 @@ void SpatialJoinOnLeafs(CkJResult& q, Leaf* lLeaf, Leaf* rLeaf, Relation& L, Rel
 #ifdef RetrieveResults
                     q.insert(PairRecord( L[id1], R[id2], id1, id2, distance2N(*L[id1], *R[id2])));
 #else
-                    q.insert();
+                    q.insert(distance2N(*L[id1], *R[id2]));
 #endif
                 }
                 ++iter;
@@ -1319,7 +1157,7 @@ void SpatialJoinOnLeafs2(CkJResult& q, Leaf& l, Leaf& r, Relation& L, Relation& 
 #ifdef RetrieveResults
                         q.insert(PairRecord( L[id1], R[id2], id1, id2, d));
 #else
-                        q.insert();
+                        q.insert(distance2N(*L[id1], *R[id2]));
 #endif
                       }
                 }
@@ -1351,7 +1189,7 @@ void SpatialJoinOnLeafs2(CkJResult& q, Leaf& l, Leaf& r, Relation& L, Relation& 
 #ifdef RetrieveResults
                             q.insert(PairRecord( L[id1], R[id2], id1, id2, d));
 #else
-                            q.insert();
+                            q.insert(distance2N(*L[id1], *R[id2]));
 #endif
                      }
                             

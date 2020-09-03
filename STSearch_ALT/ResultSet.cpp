@@ -120,37 +120,6 @@ CkJResult::CkJResult(int num, termSet tl, termSetSize sl, termSet tr, termSetSiz
 
 
 
-inline void CkJResult::insert(Coordinates dist){
-    numInsertions++;
-    
-    if(numInsertions > k){
-        theta = min(dist, theta);
-        theta_sqr = theta * theta;
-    }else if (numInsertions == k){
-        theta = min(dist, tmp_theta);
-        theta_sqr = theta * theta;
-    }else{
-        tmp_theta = min(dist, tmp_theta);
-    }
-}
-
-
-
-//inline void CkJResult::insert(PairRecord rec){
-//    numInsertions++;
-//    auto it = result.begin();
-//    for (; it != result.end(); it++){
-//        if( !(*it < rec) ){
-//            break;
-//        }
-//    }
-//    result.insert(it, rec);
-//    if(result.size() > k){
-//        result.erase(result.end()-1);
-//        theta = (result.end()-1)->score;
-//        theta_sqr = theta * theta;
-//    }
-//}
 
 void CkJResult::clear(){
     
@@ -168,7 +137,7 @@ void CkJResult::clear(){
     }
 }
 
-
+#ifdef RetrieveResults
 void CkJResult::print(char c){
     cout << "RESULT " << c << " pairs " << result.size() << " Insertions " << numInsertions  << " theta " << theta<< "\n";
     if(result.size()==0){
@@ -182,8 +151,15 @@ void CkJResult::print(char c){
         }
     }
 }
-
-
+#else
+void CkJResult::print(char c){
+    cout << "RESULT " << c << " pairs " << result.size() << " Insertions " << numInsertions  << " theta " << theta<< "\n";
+    while(!dist.empty()){
+        cout << dist.top() << endl;
+        dist.pop();
+    }
+}
+#endif
 
 
 
@@ -327,6 +303,9 @@ void TkRQResult::clear(){
     
     
 };
+
+
+
 void TkRQResult::print(char c){
     cout << "RESULT " << c << " pairs: " << result.size() <<"\n";
     if(result.size()==0){
@@ -338,9 +317,6 @@ void TkRQResult::print(char c){
         cout << "\n";
     }
 };
-
-
-
 
 
 

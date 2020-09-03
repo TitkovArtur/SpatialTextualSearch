@@ -62,6 +62,7 @@ struct CDJResult{
     ~CDJResult();
     inline void insert();
     inline void insert(PairRecord rec);
+
     void clear();
     void print(char c);
 

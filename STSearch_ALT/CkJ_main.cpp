@@ -303,7 +303,7 @@ int main(int argc, char **argv){
     }
     cout << "K_S keywords " << endl;
     for(int i = 0; i < numKeywords; i++){
-        cout <<"keword\t "<< q->termSetR[i] << "\t posting list length\t " << ifR->lists.at(kwR[i]).size() << endl << endl;
+        cout <<"keword\t "<< q->termSetR[i] << "\t posting list length\t " << ifR->lists.at(kwR[i]).size() << endl;
     }
     
     
@@ -320,9 +320,10 @@ int main(int argc, char **argv){
     
     
     
+    int aa [] = {23, 98, 129};
+    int bb [] = {20, 23, 129};
     
-    
-    
+    q = new CkJResult(k, aa, 3, bb, 3);
     
     
     
