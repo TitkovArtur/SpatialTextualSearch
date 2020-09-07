@@ -1,10 +1,20 @@
 //
-//  utils_boolean.cpp
-//  BRQ
+// Project:    Spatially Combined Text Searches
+// Filename:   utils_spatial.cpp
+// Created on: 06.07.20.
 //
-//  Created by Artur Titkov on 06.07.20.
-//  Copyright © 2020 Artur Titkov. All rights reserved.
+// Developer(s):
+//    I) Artur Titkov
+//       ArturTitkov@icloud.com
+//       https://github.com/TitkovArtur
+//    II) unknown
 //
+// Description:
+//
+//
+// Copyright © 2020 Artur Titkov. All rights reserved.
+//
+
 #include "def.h"
 #include "relation.h"
 #include "inverted_index.h"

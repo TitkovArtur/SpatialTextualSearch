@@ -1,11 +1,19 @@
 //
-//  ResultSet.cpp
-//  STSearch_ALT
+// Project:    Spatially Combined Text Searches
+// Filename:   ResultSet.cpp
+// Created on: 11.06.20.
 //
-//  Created by Artur Titkov on 11.06.20.
-//  Copyright © 2020 Artur Titkov. All rights reserved.
+// Developer(s):
+//    I) Artur Titkov
+//       ArturTitkov@icloud.com
+//       https://github.com/TitkovArtur
+//    II) unknown
 //
-
+// Description:
+//
+//
+// Copyright © 2020 Artur Titkov. All rights reserved.
+//
 
 #include "ResultSet.h"
 #include "inverted_index.h"
