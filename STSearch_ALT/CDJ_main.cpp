@@ -1,3 +1,20 @@
+//
+// Project:    Spatially Combined Text Searches
+// Filename:   CDJ_main.cpp
+// Created on: 17.06.20.
+//
+// Developer(s):
+//    I) Artur Titkov
+//       ArturTitkov@icloud.com
+//       https://github.com/TitkovArtur
+//    II) unknown
+//
+// Description:
+//
+//
+// Copyright © 2020 Artur Titkov. All rights reserved.
+//
+
 #include "def.h"
 #include "relation.h"
 #include "inverted_index.h"

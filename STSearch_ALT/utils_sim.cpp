@@ -1,9 +1,18 @@
 //
-//  utils_sim.cpp
-//  TkRQ
+// Project:    Spatially Combined Text Searches
+// Filename:   utils_sim.cpp
+// Created on: 17.07.20.
 //
-//  Created by Artur Titkov on 17.07.20.
-//  Copyright © 2020 Artur Titkov. All rights reserved.
+// Developer(s):
+//    I) Artur Titkov
+//       ArturTitkov@icloud.com
+//       https://github.com/TitkovArtur
+//    II) unknown
+//
+// Description:
+//
+//
+// Copyright © 2020 Artur Titkov. All rights reserved.
 //
 
 #include "def.h"
