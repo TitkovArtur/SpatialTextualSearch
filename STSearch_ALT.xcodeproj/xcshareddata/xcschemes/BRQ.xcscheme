@@ -52,11 +52,11 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/Artur/Desktop/tripadvisor_restaurants_london_replayced.txt"
+            argument = "/Users/Artur/data/tripadvisor.inp"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/Artur/Desktop/tripadvisor_restaurants_london_replayced.txt"
+            argument = "/Users/Artur/data/tripadvisor.inp"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
